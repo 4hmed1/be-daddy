@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#00b894">
+    <meta name="description" content="BE DADDY - Pakistan's Complete Food Macro Calculator">
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiQkUgREFERFkiLCJzaG9ydF9uYW1lIjoiQkUgREFERFkiLCJzdGFydF91cmwiOiIuIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJiYWNrZ3JvdW5kX2NvbG9yIjoiI2Y4ZmZmZSIsInRoZW1lX2NvbG9yIjoiIzAwYjg5NCJ9">
+    <title>BE DADDY 🏋️ Pakistan Food Macros</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+        :root{
+            --primary:#00b894;--primary-light:#55efc4;--primary-dark:#00a381;
+            --secondary:#6c5ce7;--accent:#fd79a8;--bg:#f8fffe;--card:#ffffff;
+            --text:#2d3436;--text-light:#636e72;--text-muted:#b2bec3;
+            --shadow:0 8px 30px rgba(0,184,148,0.1);
+            --shadow-lg:0 20px 60px rgba(0,184,148,0.15);
+            --gradient:linear-gradient(135deg,#00b894,#55efc4);
+            --gradient2:linear-gradient(135deg,#6c5ce7,#a29bfe);
+            --gradient3:linear-gradient(135deg,#fd79a8,#fdcb6e);
+            --protein:#e17055;--carbs:#fdcb6e;--fat:#6c5ce7;--fiber:#00b894;
+            --safe-top:env(safe-area-inset-top,0px);
+            --safe-bottom:env(safe-area-inset-bottom,0px);
+            --nav-height:70px;
+        }
+        html{scroll-behavior:smooth;overscroll-behavior-y:contain}
+        body{
+            font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);
+            min-height:100vh;min-height:100dvh;overflow-x:hidden;
+            padding-bottom:calc(var(--nav-height) + var(--safe-bottom) + 10px);
+            -webkit-font-smoothing:antialiased;
+        }
+        ::-webkit-scrollbar{width:4px}
+        ::-webkit-scrollbar-track{background:transparent}
+        ::-webkit-scrollbar-thumb{background:var(--primary-light);border-radius:10px}
+
+        /* ==================== SPLASH SCREEN ==================== */
+        .splash{
+            position:fixed;top:0;left:0;width:100%;height:100%;height:100dvh;
+            background:var(--gradient);z-index:9999;display:flex;flex-direction:column;
+            align-items:center;justify-content:center;transition:opacity 0.6s,transform 0.6s;
+        }
+        .splash.hide{opacity:0;transform:scale(1.1);pointer-events:none}
+        .splash-logo{
+            width:100px;height:100px;background:white;border-radius:28px;
+            display:flex;align-items:center;justify-content:center;font-size:2.8rem;
+            box-shadow:0 15px 50px rgba(0,0,0,0.15);animation:splashPulse 1.5s infinite;
+            margin-bottom:20px;
+        }
+        .splash h1{color:white;font-size:2.2rem;font-weight:900;letter-spacing:2px;text-shadow:0 2px 10px rgba(0,0,0,0.1)}
+        .splash p{color:rgba(255,255,255,0.85);font-size:0.95rem;margin-top:5px;font-weight:300}
+        .splash-bar{width:120px;height:4px;background:rgba(255,255,255,0.3);border-radius:10px;margin-top:30px;overflow:hidden}
+        .splash-bar-fill{width:0;height:100%;background:white;border-radius:10px;animation:splashLoad 1.8s ease forwards}
+        @keyframes splashPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+        @keyframes splashLoad{0%{width:0}100%{width:100%}}
+
+        /* ==================== BG DECORATION ==================== */
+        .bg-deco{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:hidden}
+        .bg-blob{position:absolute;border-radius:50%;opacity:0.04;animation:blobFloat 25s infinite ease-in-out}
+        .bg-blob:nth-child(1){width:350px;height:350px;background:var(--primary);top:-80px;right:-80px}
+        .bg-blob:nth-child(2){width:280px;height:280px;background:var(--secondary);bottom:-60px;left:-60px;animation-delay:-8s}
+        .bg-blob:nth-child(3){width:200px;height:200px;background:var(--accent);top:40%;left:60%;animation-delay:-15s}
+        @keyframes blobFloat{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(25px,-25px) scale(1.08)}66%{transform:translate(-15px,15px) scale(0.95)}}
+
+        /* ==================== HEADER ==================== */
+        .header{
+            background:var(--gradient);padding:0;position:relative;overflow:hidden;
+            padding-top:var(--safe-top);
+        }
+        .header-inner{
+            padding:25px 20px 45px;text-align:center;position:relative;z-index:2;
+        }
+        .header-badge{
+            display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.2);
+            backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+            padding:6px 16px;border-radius:50px;font-size:0.75rem;color:white;
+            font-weight:500;margin-bottom:12px;animation:fadeSlideDown 0.8s ease;
+        }
+        .header h1{
+            font-size:2.5rem;font-weight:900;color:white;letter-spacing:3px;
+            text-shadow:0 3px 15px rgba(0,0,0,0.1);animation:fadeSlideDown 0.8s ease 0.1s both;
+            line-height:1.1;
+        }
+        .header h1 .emoji{font-size:2rem;display:inline-block;animation:muscleAnim 2s infinite}
+        .header p{
+            color:rgba(255,255,255,0.88);font-size:0.92rem;font-weight:300;
+            animation:fadeSlideDown 0.8s ease 0.2s both;margin-top:6px;
+        }
+        .header-stats{
+            display:flex;justify-content:center;gap:10px;margin-top:16px;flex-wrap:wrap;
+            animation:fadeSlideDown 0.8s ease 0.35s both;
+        }
+        .h-stat{
+            background:rgba(255,255,255,0.18);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+            padding:7px 14px;border-radius:50px;color:white;font-size:0.78rem;font-weight:500;
+            display:flex;align-items:center;gap:5px;
+        }
+        .h-stat span{font-weight:800;font-size:0.88rem}
+        .header-wave{position:absolute;bottom:-2px;left:0;width:100%}
+        @keyframes fadeSlideDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes muscleAnim{0%,100%{transform:rotate(0deg) scale(1)}25%{transform:rotate(-10deg) scale(1.15)}75%{transform:rotate(10deg) scale(1.1)}}
+
+        /* ==================== CONTAINER ==================== */
+        .container{max-width:600px;margin:0 auto;padding:0 16px;position:relative;z-index:1}
+
+        /* ==================== SEARCH CARD ==================== */
+        .search-section{margin-top:-28px;position:relative;z-index:10;animation:fadeSlideUp 0.8s ease 0.3s both}
+        @keyframes fadeSlideUp{from{opacity:0;transform:translateY(25px)}to{opacity:1;transform:translateY(0)}}
+        .search-card{
+            background:var(--card);border-radius:22px;padding:22px;
+            box-shadow:var(--shadow-lg);border:1px solid rgba(0,184,148,0.06);
+        }
+        .input-row{display:flex;gap:10px;flex-wrap:wrap}
+        .input-col{flex:1;min-width:0;position:relative}
+        .input-col.food-col{flex:2;min-width:160px}
+        .input-col.weight-col{flex:1;min-width:90px}
+        .input-col label{
+            display:block;font-size:0.72rem;font-weight:700;color:var(--text-light);
+            text-transform:uppercase;letter-spacing:0.6px;margin-bottom:6px;
+        }
+        .input-icon{position:absolute;left:14px;top:35px;font-size:1.1rem;z-index:2;pointer-events:none}
+        .input-col input{
+            width:100%;padding:13px 14px 13px 42px;border:2px solid #e8f5f0;border-radius:14px;
+            font-size:0.95rem;font-family:'Poppins',sans-serif;color:var(--text);
+            background:#f8fffe;transition:all 0.3s;outline:none;
+            -webkit-appearance:none;appearance:none;
+        }
+        .input-col input:focus{border-color:var(--primary);background:white;box-shadow:0 0 0 4px rgba(0,184,148,0.1)}
+        .input-col input::placeholder{color:var(--text-muted);font-size:0.88rem}
+        .calc-btn{
+            width:100%;margin-top:12px;padding:14px;background:var(--gradient);color:white;
+            border:none;border-radius:14px;font-size:1rem;font-weight:700;font-family:'Poppins',sans-serif;
+            cursor:pointer;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:8px;
+            box-shadow:0 6px 20px rgba(0,184,148,0.25);position:relative;overflow:hidden;
+        }
+        .calc-btn:active{transform:scale(0.97);box-shadow:0 3px 10px rgba(0,184,148,0.2)}
+        .calc-btn .btn-ripple{
+            position:absolute;border-radius:50%;background:rgba(255,255,255,0.3);
+            transform:scale(0);animation:rippleAnim 0.6s ease-out;pointer-events:none;
+        }
+        @keyframes rippleAnim{to{transform:scale(4);opacity:0}}
+        .calc-btn .btn-emoji{font-size:1.2rem;transition:transform 0.3s}
+
+        /* ==================== SUGGESTIONS ==================== */
+        .suggestions{
+            position:absolute;top:100%;left:0;right:0;background:white;border-radius:14px;
+            box-shadow:0 15px 50px rgba(0,0,0,0.12);z-index:100;max-height:280px;overflow-y:auto;
+            display:none;border:1px solid #e8f5f0;margin-top:4px;
+            overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+        }
+        .suggestions.open{display:block;animation:ddAnim 0.25s ease}
+        @keyframes ddAnim{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+        .sug-item{
+            padding:11px 16px;cursor:pointer;display:flex;align-items:center;gap:11px;
+            transition:background 0.15s;border-bottom:1px solid #f5faf8;
+            -webkit-tap-highlight-color:rgba(0,184,148,0.08);
+        }
+        .sug-item:last-child{border-bottom:none}
+        .sug-item:active{background:#f0faf7}
+        .sug-emoji{
+            font-size:1.4rem;width:38px;height:38px;display:flex;align-items:center;justify-content:center;
+            background:#f0faf7;border-radius:11px;flex-shrink:0;
+        }
+        .sug-info{flex:1;min-width:0}
+        .sug-name{font-weight:600;font-size:0.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .sug-cat{font-size:0.72rem;color:var(--text-light);text-transform:uppercase;letter-spacing:0.4px}
+        .sug-empty{padding:20px;text-align:center;color:var(--text-light);font-size:0.9rem}
+
+        /* ==================== CATEGORY CHIPS ==================== */
+        .cats{margin-top:22px;animation:fadeSlideUp 0.8s ease 0.45s both}
+        .cats-title{font-size:0.72rem;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:10px}
+        .cats-scroll{
+            display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;
+            -webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;
+            scrollbar-width:none;-ms-overflow-style:none;
+        }
+        .cats-scroll::-webkit-scrollbar{display:none}
+        .cat-chip{
+            padding:8px 16px;border-radius:50px;border:2px solid #e8f5f0;background:white;
+            font-size:0.8rem;font-weight:600;font-family:'Poppins',sans-serif;cursor:pointer;
+            transition:all 0.3s;color:var(--text-light);display:flex;align-items:center;gap:5px;
+            white-space:nowrap;flex-shrink:0;scroll-snap-align:start;
+        }
+        .cat-chip:active,.cat-chip.on{
+            background:var(--gradient);color:white;border-color:var(--primary);
+            transform:scale(0.97);box-shadow:0 4px 12px rgba(0,184,148,0.2);
+        }
+
+        /* ==================== LOADING ==================== */
+        .loading{display:none;text-align:center;padding:35px 20px}
+        .loading.on{display:block;animation:fadeSlideUp 0.3s ease}
+        .spinner{
+            width:45px;height:45px;border:3.5px solid #e8f5f0;border-top:3.5px solid var(--primary);
+            border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 12px;
+        }
+        @keyframes spin{to{transform:rotate(360deg)}}
+        .loading p{color:var(--text-light);font-size:0.9rem}
+
+        /* ==================== ERROR ==================== */
+        .error-box{
+            display:none;background:#fff5f5;border:2px solid #fed7d7;border-radius:16px;
+            padding:18px;text-align:center;margin-top:18px;color:#c53030;
+        }
+        .error-box.on{display:block;animation:shakeAnim 0.5s ease}
+        @keyframes shakeAnim{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+        .error-box .err-icon{font-size:2.2rem;margin-bottom:6px}
+        .error-box p{font-size:0.9rem}
+
+        /* ==================== RESULTS ==================== */
+        .results{margin-top:22px;display:none}
+        .results.on{display:block;animation:fadeSlideUp 0.5s ease}
+        .res-header{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+        .res-emoji{
+            font-size:2.5rem;width:62px;height:62px;display:flex;align-items:center;justify-content:center;
+            background:var(--gradient);border-radius:18px;animation:popBounce 0.5s ease;flex-shrink:0;
+        }
+        @keyframes popBounce{0%{transform:scale(0)}60%{transform:scale(1.12)}100%{transform:scale(1)}}
+        .res-name{font-size:1.4rem;font-weight:800;line-height:1.2}
+        .res-weight{font-size:0.85rem;color:var(--text-light);font-weight:400}
+
+        /* Calories Card */
+        .cal-card{
+            background:var(--gradient);border-radius:22px;padding:24px;text-align:center;
+            color:white;margin-bottom:16px;position:relative;overflow:hidden;
+            animation:fadeSlideUp 0.5s ease 0.1s both;
+        }
+        .cal-card::before{
+            content:'';position:absolute;top:-60%;right:-40%;width:180%;height:180%;
+            background:radial-gradient(circle,rgba(255,255,255,0.08) 0%,transparent 65%);animation:shimmerRot 5s infinite linear;
+        }
+        @keyframes shimmerRot{to{transform:rotate(360deg)}}
+        .cal-label{font-size:0.82rem;font-weight:500;opacity:0.9;text-transform:uppercase;letter-spacing:1.5px}
+        .cal-val{font-size:3.5rem;font-weight:900;line-height:1;margin:8px 0 4px;position:relative;z-index:1}
+        .cal-unit{font-size:0.9rem;font-weight:400;opacity:0.78}
+
+        /* Macro Grid */
+        .macro-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+        .m-card{
+            background:var(--card);border-radius:18px;padding:20px;box-shadow:var(--shadow);
+            border:1px solid rgba(0,184,148,0.05);transition:transform 0.3s,box-shadow 0.3s;
+            position:relative;overflow:hidden;
+        }
+        .m-card:nth-child(1){animation:fadeSlideUp 0.5s ease 0.15s both}
+        .m-card:nth-child(2){animation:fadeSlideUp 0.5s ease 0.22s both}
+        .m-card:nth-child(3){animation:fadeSlideUp 0.5s ease 0.29s both}
+        .m-card:nth-child(4){animation:fadeSlideUp 0.5s ease 0.36s both}
+        .m-card:active{transform:scale(0.97)}
+        .m-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3.5px;border-radius:0 0 18px 18px}
+        .m-card.protein::after{background:var(--protein)}.m-card.carbs::after{background:var(--carbs)}
+        .m-card.fat::after{background:var(--fat)}.m-card.fiber::after{background:var(--fiber)}
+        .m-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin-bottom:10px}
+        .m-card.protein .m-icon{background:rgba(225,112,85,0.12)}
+        .m-card.carbs .m-icon{background:rgba(253,203,110,0.2)}
+        .m-card.fat .m-icon{background:rgba(108,92,231,0.1)}
+        .m-card.fiber .m-icon{background:rgba(0,184,148,0.1)}
+        .m-label{font-size:0.72rem;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:3px}
+        .m-val{font-size:1.7rem;font-weight:800;line-height:1.2}
+        .m-card.protein .m-val{color:var(--protein)}.m-card.carbs .m-val{color:#d4a000}
+        .m-card.fat .m-val{color:var(--fat)}.m-card.fiber .m-val{color:var(--fiber)}
+        .m-unit{font-size:0.82rem;font-weight:400;color:var(--text-light)}
+        .m-bar-bg{margin-top:10px;background:#f0f0f0;border-radius:8px;height:5px;overflow:hidden}
+        .m-bar{height:100%;border-radius:8px;width:0;transition:width 1s cubic-bezier(0.4,0,0.2,1)}
+        .m-card.protein .m-bar{background:var(--protein)}.m-card.carbs .m-bar{background:var(--carbs)}
+        .m-card.fat .m-bar{background:var(--fat)}.m-card.fiber .m-bar{background:var(--fiber)}
+
+        /* Pie Chart Section */
+        .chart-box{
+            background:var(--card);border-radius:22px;padding:24px;box-shadow:var(--shadow);
+            margin-top:16px;border:1px solid rgba(0,184,148,0.05);
+            animation:fadeSlideUp 0.5s ease 0.42s both;
+        }
+        .chart-title{font-size:1rem;font-weight:700;margin-bottom:18px;text-align:center}
+        .chart-wrap{display:flex;align-items:center;justify-content:center;gap:28px;flex-wrap:wrap}
+        .pie{
+            width:150px;height:150px;border-radius:50%;position:relative;
+            animation:pieRotateIn 0.8s ease;flex-shrink:0;
+        }
+        @keyframes pieRotateIn{from{transform:rotate(-180deg);opacity:0}to{transform:rotate(0);opacity:1}}
+        .pie-center{
+            position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+            width:70px;height:70px;background:white;border-radius:50%;
+            display:flex;align-items:center;justify-content:center;
+            font-size:0.75rem;font-weight:700;text-align:center;line-height:1.2;
+            box-shadow:0 2px 10px rgba(0,0,0,0.05);
+        }
+        .legend{display:flex;flex-direction:column;gap:10px}
+        .leg-item{display:flex;align-items:center;gap:9px;font-size:0.85rem}
+        .leg-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+        .leg-val{font-weight:700;margin-left:auto;padding-left:15px}
+
+        /* Detail Section */
+        .detail-box{
+            background:var(--card);border-radius:22px;padding:22px;box-shadow:var(--shadow);
+            margin-top:16px;border:1px solid rgba(0,184,148,0.05);
+            animation:fadeSlideUp 0.5s ease 0.5s both;
+        }
+        .detail-title{font-size:1rem;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:7px}
+        .d-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid #f5faf8}
+        .d-row:last-child{border-bottom:none}
+        .d-row .d-label{font-size:0.85rem;color:var(--text-light);display:flex;align-items:center;gap:7px}
+        .d-row .d-value{font-weight:600;font-size:0.9rem}
+
+        /* ==================== QUICK FOODS ==================== */
+        .quick{margin-top:28px;animation:fadeSlideUp 0.8s ease 0.55s both}
+        .sec-title{font-size:1.15rem;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+        .quick-grid{
+            display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
+        }
+        .qf{
+            background:var(--card);border-radius:16px;padding:15px 10px;text-align:center;
+            cursor:pointer;transition:all 0.3s;border:2px solid transparent;
+            box-shadow:0 3px 12px rgba(0,0,0,0.04);-webkit-tap-highlight-color:transparent;
+        }
+        .qf:active{transform:scale(0.95);border-color:var(--primary);box-shadow:0 6px 20px rgba(0,184,148,0.12)}
+        .qf-emoji{font-size:2rem;display:block;margin-bottom:6px}
+        .qf-name{font-size:0.78rem;font-weight:600;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .qf-cal{font-size:0.68rem;color:var(--text-light);margin-top:2px}
+
+        /* ==================== HISTORY ==================== */
+        .history{margin-top:28px;margin-bottom:20px;display:none}
+        .history.on{display:block;animation:fadeSlideUp 0.5s ease}
+        .hist-item{
+            background:var(--card);border-radius:14px;padding:13px 16px;display:flex;
+            align-items:center;gap:12px;margin-bottom:8px;box-shadow:0 3px 12px rgba(0,0,0,0.04);
+            cursor:pointer;transition:all 0.2s;-webkit-tap-highlight-color:transparent;
+        }
+        .hist-item:active{transform:translateX(4px);background:#f5faf8}
+        .hist-emoji{font-size:1.6rem;flex-shrink:0}
+        .hist-info{flex:1;min-width:0}
+        .hist-name{font-weight:600;font-size:0.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .hist-det{font-size:0.75rem;color:var(--text-light)}
+        .hist-cal{font-weight:700;color:var(--primary);font-size:0.95rem;flex-shrink:0}
+        .clear-hist{
+            background:none;border:1px solid #e8f5f0;padding:6px 14px;border-radius:50px;
+            font-size:0.75rem;color:var(--text-light);cursor:pointer;font-family:'Poppins',sans-serif;
+            font-weight:500;transition:all 0.2s;
+        }
+        .clear-hist:active{background:#fff5f5;border-color:#fed7d7;color:#c53030}
+
+        /* ==================== BOTTOM NAV ==================== */
+        .bottom-nav{
+            position:fixed;bottom:0;left:0;right:0;height:var(--nav-height);
+            background:rgba(255,255,255,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+            border-top:1px solid rgba(0,184,148,0.08);z-index:100;
+            display:flex;align-items:center;justify-content:space-around;
+            padding-bottom:var(--safe-bottom);
+            box-shadow:0 -5px 30px rgba(0,0,0,0.06);
+        }
+        .nav-item{
+            display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;
+            padding:8px 16px;border-radius:14px;transition:all 0.3s;position:relative;
+            -webkit-tap-highlight-color:transparent;
+        }
+        .nav-item .nav-icon{font-size:1.4rem;transition:transform 0.3s}
+        .nav-item .nav-label{font-size:0.65rem;font-weight:600;color:var(--text-light);transition:color 0.3s}
+        .nav-item.on .nav-icon{transform:scale(1.15)}
+        .nav-item.on .nav-label{color:var(--primary);font-weight:700}
+        .nav-item.on::before{
+            content:'';position:absolute;top:-1px;left:50%;transform:translateX(-50%);
+            width:20px;height:3px;background:var(--gradient);border-radius:0 0 10px 10px;
+        }
+        .nav-item:active{transform:scale(0.9)}
+
+        /* Center action button */
+        .nav-center{
+            width:56px;height:56px;background:var(--gradient);border-radius:50%;
+            display:flex;align-items:center;justify-content:center;font-size:1.6rem;
+            box-shadow:0 6px 25px rgba(0,184,148,0.3);margin-top:-28px;
+            transition:all 0.3s;cursor:pointer;border:3px solid white;
+        }
+        .nav-center:active{transform:scale(0.9);box-shadow:0 3px 15px rgba(0,184,148,0.3)}
+
+        /* ==================== PAGES ==================== */
+        .page{display:none}
+        .page.on{display:block;animation:pageFade 0.35s ease}
+        @keyframes pageFade{from{opacity:0}to{opacity:1}}
+
+        /* ==================== DAILY TRACKER ==================== */
+        .tracker-card{
+            background:var(--card);border-radius:22px;padding:22px;box-shadow:var(--shadow);
+            margin-top:20px;border:1px solid rgba(0,184,148,0.05);
+        }
+        .tracker-title{font-size:1.1rem;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+        .tracker-totals{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px}
+        .tt-item{
+            background:#f8fffe;border-radius:14px;padding:14px;text-align:center;
+            border:1px solid #e8f5f0;
+        }
+        .tt-label{font-size:0.7rem;font-weight:600;color:var(--text-light);text-transform:uppercase;letter-spacing:0.4px}
+        .tt-val{font-size:1.4rem;font-weight:800;margin-top:2px}
+        .tt-item:nth-child(1) .tt-val{color:var(--accent)}
+        .tt-item:nth-child(2) .tt-val{color:var(--protein)}
+        .tt-item:nth-child(3) .tt-val{color:#d4a000}
+        .tt-item:nth-child(4) .tt-val{color:var(--fat)}
+        .tracker-list{max-height:300px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+        .tl-item{
+            display:flex;align-items:center;gap:12px;padding:10px 0;
+            border-bottom:1px solid #f5faf8;
+        }
+        .tl-item:last-child{border-bottom:none}
+        .tl-emoji{font-size:1.4rem}
+        .tl-info{flex:1;min-width:0}
+        .tl-name{font-weight:600;font-size:0.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .tl-meta{font-size:0.72rem;color:var(--text-light)}
+        .tl-cal{font-weight:700;color:var(--primary);font-size:0.88rem;flex-shrink:0}
+        .tl-del{
+            width:28px;height:28px;border-radius:8px;border:none;background:#fff5f5;
+            color:#e17055;font-size:0.9rem;cursor:pointer;display:flex;align-items:center;
+            justify-content:center;flex-shrink:0;transition:all 0.2s;
+        }
+        .tl-del:active{background:#fed7d7;transform:scale(0.9)}
+        .tracker-empty{text-align:center;padding:30px;color:var(--text-light);font-size:0.9rem}
+        .tracker-empty .te-icon{font-size:2.5rem;margin-bottom:8px}
+        .reset-btn{
+            width:100%;margin-top:12px;padding:12px;background:#fff5f5;color:#e17055;
+            border:2px solid #fed7d7;border-radius:14px;font-size:0.88rem;font-weight:600;
+            font-family:'Poppins',sans-serif;cursor:pointer;transition:all 0.2s;
+        }
+        .reset-btn:active{background:#fed7d7;transform:scale(0.97)}
+
+        /* ==================== TOAST ==================== */
+        .toast{
+            position:fixed;bottom:calc(var(--nav-height) + var(--safe-bottom) + 15px);
+            left:50%;transform:translateX(-50%) translateY(120px);
+            background:var(--text);color:white;padding:12px 22px;border-radius:50px;
+            font-size:0.85rem;font-weight:500;z-index:200;transition:transform 0.4s cubic-bezier(0.68,-0.55,0.265,1.55);
+            box-shadow:0 8px 30px rgba(0,0,0,0.2);white-space:nowrap;max-width:90%;
+            display:flex;align-items:center;gap:8px;
+        }
+        .toast.show{transform:translateX(-50%) translateY(0)}
+
+        /* ==================== RESPONSIVE ==================== */
+        @media(max-width:380px){
+            .header h1{font-size:2rem}
+            .quick-grid{grid-template-columns:repeat(2,1fr)}
+            .macro-grid{grid-template-columns:1fr 1fr;gap:8px}
+            .m-card{padding:14px}
+            .m-val{font-size:1.4rem}
+            .cal-val{font-size:2.8rem}
+            .chart-wrap{gap:16px}
+            .pie{width:120px;height:120px}
+            .pie-center{width:56px;height:56px;font-size:0.65rem}
+        }
+        @media(min-width:381px) and (max-width:500px){
+            .quick-grid{grid-template-columns:repeat(3,1fr)}
+        }
+        @media(min-width:501px){
+            .quick-grid{grid-template-columns:repeat(4,1fr)}
+        }
+        @media(min-width:768px){
+            .container{max-width:650px}
+            .quick-grid{grid-template-columns:repeat(4,1fr)}
+        }
+
+        /* Install Prompt */
+        .install-banner{
+            background:var(--gradient2);border-radius:18px;padding:18px;margin-top:20px;
+            color:white;display:none;animation:fadeSlideUp 0.5s ease;
+        }
+        .install-banner.show{display:block}
+        .install-banner h3{font-size:1rem;font-weight:700;margin-bottom:4px}
+        .install-banner p{font-size:0.82rem;opacity:0.9;margin-bottom:12px}
+        .install-btns{display:flex;gap:8px}
+        .install-btn{
+            padding:9px 18px;border-radius:50px;font-size:0.82rem;font-weight:600;
+            font-family:'Poppins',sans-serif;cursor:pointer;transition:all 0.2s;border:none;
+        }
+        .install-btn.primary{background:white;color:var(--secondary)}
+        .install-btn.secondary{background:rgba(255,255,255,0.2);color:white;border:1px solid rgba(255,255,255,0.3)}
+        .install-btn:active{transform:scale(0.95)}
+    </style>
+</head>
+<body>
+
+<!-- SPLASH SCREEN -->
+<div class="splash" id="splash">
+    <div class="splash-logo">🏋️</div>
+    <h1>BE DADDY</h1>
+    <p>Know Your Food. Own Your Body.</p>
+    <div class="splash-bar"><div class="splash-bar-fill"></div></div>
+</div>
+
+<!-- BG DECORATION -->
+<div class="bg-deco"><div class="bg-blob"></div><div class="bg-blob"></div><div class="bg-blob"></div></div>
+
+<!-- ==================== PAGE: HOME ==================== -->
+<div class="page on" id="pageHome">
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-inner">
+            <div class="header-badge">🇵🇰 Pakistan Edition</div>
+            <h1><span class="emoji">🏋️</span> BE DADDY</h1>
+            <p>Know Your Food. Own Your Body.</p>
+            <div class="header-stats">
+                <div class="h-stat">🍽️ <span id="totalFoods">350+</span> Foods</div>
+                <div class="h-stat">📊 Real Macros</div>
+                <div class="h-stat">⚡ Instant</div>
+            </div>
+        </div>
+        <svg class="header-wave" viewBox="0 0 1440 80" fill="none"><path d="M0,50 C300,80 600,10 900,50 C1100,75 1300,40 1440,50 L1440,80 L0,80Z" fill="#f8fffe"/></svg>
+    </header>
+
+    <div class="container">
+
+        <!-- SEARCH -->
+        <div class="search-section">
+            <div class="search-card">
+                <div class="input-row">
+                    <div class="input-col food-col">
+                        <label>Food Name</label>
+                        <span class="input-icon">🔍</span>
+                        <input type="text" id="foodInput" placeholder="e.g. Biryani, Roti..." autocomplete="off" enterkeyhint="next">
+                        <div class="suggestions" id="suggestions"></div>
+                    </div>
+                    <div class="input-col weight-col">
+                        <label>Grams</label>
+                        <span class="input-icon">⚖️</span>
+                        <input type="number" id="weightInput" placeholder="100" min="1" value="100" inputmode="numeric" enterkeyhint="go">
+                    </div>
+                </div>
+                <button class="calc-btn" id="calcBtn" onclick="calculate()">
+                    <span class="btn-emoji">🔬</span> Calculate Macros
+                </button>
+            </div>
+        </div>
+
+        <!-- CATEGORIES -->
+        <div class="cats">
+            <p class="cats-title">🏷️ Browse by Category</p>
+            <div class="cats-scroll" id="catsScroll"></div>
+        </div>
+
+        <!-- LOADING -->
+        <div class="loading" id="loading"><div class="spinner"></div><p>Calculating macros...</p></div>
+
+        <!-- ERROR -->
+        <div class="error-box" id="errorBox">
+            <div class="err-icon">😕</div>
+            <p id="errorText">Food not found.</p>
+        </div>
+
+        <!-- RESULTS -->
+        <div class="results" id="results">
+            <div class="res-header">
+                <div class="res-emoji" id="resEmoji">🍛</div>
+                <div>
+                    <div class="res-name" id="resName">Biryani</div>
+                    <div class="res-weight" id="resWeight">per 100g</div>
+                </div>
+            </div>
+            <div class="cal-card">
+                <div class="cal-label">Total Calories</div>
+                <div class="cal-val" id="calVal">0</div>
+                <div class="cal-unit">kcal</div>
+            </div>
+            <div class="macro-grid">
+                <div class="m-card protein">
+                    <div class="m-icon">🥩</div>
+                    <div class="m-label">Protein</div>
+                    <div class="m-val"><span id="proVal">0</span><span class="m-unit">g</span></div>
+                    <div class="m-bar-bg"><div class="m-bar" id="proBar"></div></div>
+                </div>
+                <div class="m-card carbs">
+                    <div class="m-icon">🌾</div>
+                    <div class="m-label">Carbs</div>
+                    <div class="m-val"><span id="carbVal">0</span><span class="m-unit">g</span></div>
+                    <div class="m-bar-bg"><div class="m-bar" id="carbBar"></div></div>
+                </div>
+                <div class="m-card fat">
+                    <div class="m-icon">🧈</div>
+                    <div class="m-label">Fat</div>
+                    <div class="m-val"><span id="fatVal">0</span><span class="m-unit">g</span></div>
+                    <div class="m-bar-bg"><div class="m-bar" id="fatBar"></div></div>
+                </div>
+                <div class="m-card fiber">
+                    <div class="m-icon">🌿</div>
+                    <div class="m-label">Fiber</div>
+                    <div class="m-val"><span id="fibVal">0</span><span class="m-unit">g</span></div>
+                    <div class="m-bar-bg"><div class="m-bar" id="fibBar"></div></div>
+                </div>
+            </div>
+            <div class="chart-box">
+                <div class="chart-title">📊 Macro Distribution</div>
+                <div class="chart-wrap">
+                    <div class="pie" id="pie"><div class="pie-center" id="pieCenter">Macro<br>Split</div></div>
+                    <div class="legend" id="legend"></div>
+                </div>
+            </div>
+            <div class="detail-box">
+                <div class="detail-title">📋 More Details</div>
+                <div id="detailRows"></div>
+            </div>
+            <button class="calc-btn" style="margin-top:14px;" onclick="addToTracker()">
+                <span class="btn-emoji">➕</span> Add to Daily Tracker
+            </button>
+        </div>
+
+        <!-- QUICK FOODS -->
+        <div class="quick">
+            <div class="sec-title">⚡ Popular Foods</div>
+            <div class="quick-grid" id="quickGrid"></div>
+        </div>
+
+        <!-- HISTORY -->
+        <div class="history" id="historySection">
+            <div class="sec-title" style="justify-content:space-between">
+                <span>🕐 Recent Searches</span>
+                <button class="clear-hist" onclick="clearHistory()">Clear</button>
+            </div>
+            <div id="historyList"></div>
+        </div>
+
+        <!-- INSTALL BANNER -->
+        <div class="install-banner" id="installBanner">
+            <h3>📱 Install BE DADDY</h3>
+            <p>Add to home screen for the best mobile experience!</p>
+            <div class="install-btns">
+                <button class="install-btn primary" onclick="installApp()">Install Now</button>
+                <button class="install-btn secondary" onclick="dismissInstall()">Later</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== PAGE: TRACKER ==================== -->
+<div class="page" id="pageTracker">
+    <div class="container" style="padding-top:20px;">
+        <div class="sec-title" style="font-size:1.5rem;margin-bottom:0">📊 Daily Tracker</div>
+        <p style="color:var(--text-light);font-size:0.85rem;margin-bottom:5px;">Track your daily food intake</p>
+        <div class="tracker-card">
+            <div class="tracker-title">🎯 Today's Totals</div>
+            <div class="tracker-totals">
+                <div class="tt-item"><div class="tt-label">Calories</div><div class="tt-val" id="ttCal">0</div></div>
+                <div class="tt-item"><div class="tt-label">Protein</div><div class="tt-val" id="ttPro">0g</div></div>
+                <div class="tt-item"><div class="tt-label">Carbs</div><div class="tt-val" id="ttCarb">0g</div></div>
+                <div class="tt-item"><div class="tt-label">Fat</div><div class="tt-val" id="ttFat">0g</div></div>
+            </div>
+            <div class="tracker-list" id="trackerList">
+                <div class="tracker-empty" id="trackerEmpty">
+                    <div class="te-icon">🍽️</div>
+                    <p>No foods added yet today.<br>Search and add foods to track!</p>
+                </div>
+            </div>
+            <button class="reset-btn" onclick="resetTracker()">🗑️ Reset Today's Log</button>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== PAGE: INFO ==================== -->
+<div class="page" id="pageInfo">
+    <div class="container" style="padding-top:20px;padding-bottom:30px;">
+        <div class="sec-title" style="font-size:1.5rem;margin-bottom:15px">ℹ️ About BE DADDY</div>
+        <div style="background:var(--card);border-radius:22px;padding:24px;box-shadow:var(--shadow);margin-bottom:16px;">
+            <h3 style="margin-bottom:10px">🏋️ What is BE DADDY?</h3>
+            <p style="font-size:0.9rem;color:var(--text-light);line-height:1.7;">
+                BE DADDY is Pakistan's most comprehensive food nutrition calculator. With 350+ Pakistani foods including traditional dishes, street food, fruits, vegetables, dairy, sweets, drinks, and sauces — all with accurate macronutrient data.
+            </p>
+        </div>
+        <div style="background:var(--card);border-radius:22px;padding:24px;box-shadow:var(--shadow);margin-bottom:16px;">
+            <h3 style="margin-bottom:10px">📊 How Macros Work</h3>
+            <p style="font-size:0.9rem;color:var(--text-light);line-height:1.7;">
+                <strong>Protein (4 kcal/g):</strong> Builds muscle & repairs tissue<br>
+                <strong>Carbs (4 kcal/g):</strong> Your body's main energy source<br>
+                <strong>Fat (9 kcal/g):</strong> Essential for hormones & brain<br>
+                <strong>Fiber:</strong> Aids digestion & keeps you full<br>
+                <strong>Calories:</strong> Total energy from food
+            </p>
+        </div>
+        <div style="background:var(--card);border-radius:22px;padding:24px;box-shadow:var(--shadow);margin-bottom:16px;">
+            <h3 style="margin-bottom:10px">📱 Install as App</h3>
+            <p style="font-size:0.9rem;color:var(--text-light);line-height:1.7;">
+                <strong>Android:</strong> Tap ⋮ menu → "Add to Home Screen"<br>
+                <strong>iPhone:</strong> Tap Share icon → "Add to Home Screen"<br>
+                <strong>Desktop:</strong> Click install icon in address bar
+            </p>
+        </div>
+        <div style="background:var(--gradient);border-radius:22px;padding:24px;text-align:center;color:white;">
+            <div style="font-size:2.5rem;margin-bottom:8px">🏋️</div>
+            <h3>BE DADDY</h3>
+            <p style="opacity:0.85;font-size:0.85rem;margin-top:4px;">Know Your Food. Own Your Body.</p>
+            <p style="opacity:0.65;font-size:0.75rem;margin-top:12px;">Made with ❤️ for Pakistan</p>
+        </div>
+    </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+    <div class="nav-item on" onclick="switchPage('pageHome',this)">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-label">Home</span>
+    </div>
+    <div class="nav-item" onclick="switchPage('pageTracker',this)">
+        <span class="nav-icon">📊</span>
+        <span class="nav-label">Tracker</span>
+    </div>
+    <div class="nav-center" onclick="focusSearch()">🔍</div>
+    <div class="nav-item" onclick="switchPage('pageInfo',this)">
+        <span class="nav-icon">ℹ️</span>
+        <span class="nav-label">Info</span>
+    </div>
+    <div class="nav-item" onclick="shareApp()">
+        <span class="nav-icon">📤</span>
+        <span class="nav-label">Share</span>
+    </div>
+</nav>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span id="toastMsg">✅ Done!</span></div>
+
+<script>
+// ================================================================
+// COMPLETE PAKISTANI FOOD DATABASE (per 100g)
+// ================================================================
+const DB=[
+// RICE
+{n:"Chicken Biryani",e:"🍛",c:"rice",cal:215,p:11.5,cb:28,f:7.5,fb:0.8,s:1.2,na:480,ch:42},
+{n:"Mutton Biryani",e:"🍛",c:"rice",cal:235,p:12.8,cb:27,f:9.2,fb:0.7,s:1.0,na:510,ch:55},
+{n:"Beef Biryani",e:"🍛",c:"rice",cal:225,p:12.0,cb:27.5,f:8.3,fb:0.8,s:1.1,na:495,ch:48},
+{n:"Vegetable Biryani",e:"🍛",c:"rice",cal:165,p:3.8,cb:30,f:3.5,fb:1.8,s:2.0,na:380,ch:0},
+{n:"Sindhi Biryani",e:"🍛",c:"rice",cal:240,p:11.0,cb:28,f:9.5,fb:1.0,s:2.0,na:520,ch:45},
+{n:"Pulao",e:"🍚",c:"rice",cal:180,p:8.5,cb:26,f:5.2,fb:0.5,s:0.8,na:420,ch:25},
+{n:"Chicken Pulao",e:"🍚",c:"rice",cal:195,p:10.2,cb:26,f:5.8,fb:0.5,s:0.9,na:445,ch:35},
+{n:"Plain Boiled Rice",e:"🍚",c:"rice",cal:130,p:2.7,cb:28.2,f:0.3,fb:0.4,s:0.1,na:1,ch:0},
+{n:"Steamed Basmati Rice",e:"🍚",c:"rice",cal:150,p:3.5,cb:32,f:0.5,fb:0.6,s:0.1,na:5,ch:0},
+{n:"Fried Rice",e:"🍚",c:"rice",cal:195,p:5.2,cb:28,f:7.0,fb:1.2,s:1.5,na:550,ch:30},
+{n:"Tahiri",e:"🍚",c:"rice",cal:170,p:3.5,cb:29,f:4.5,fb:1.2,s:3.0,na:350,ch:0},
+{n:"Khichdi",e:"🍚",c:"rice",cal:120,p:5.0,cb:20,f:2.0,fb:1.5,s:0.5,na:280,ch:0},
+{n:"Zarda",e:"🍚",c:"sweet",cal:260,p:3.0,cb:48,f:7.0,fb:0.3,s:25,na:15,ch:5},
+// BREADS
+{n:"Roti",e:"🫓",c:"bread",cal:264,p:8.7,cb:52,f:3.0,fb:3.5,s:0.5,na:380,ch:0},
+{n:"Naan",e:"🫓",c:"bread",cal:310,p:9.0,cb:54,f:6.5,fb:2.2,s:3.0,na:490,ch:5},
+{n:"Garlic Naan",e:"🫓",c:"bread",cal:320,p:9.2,cb:52,f:8.0,fb:2.0,s:2.5,na:500,ch:8},
+{n:"Butter Naan",e:"🫓",c:"bread",cal:340,p:8.5,cb:50,f:11,fb:1.8,s:3.5,na:520,ch:20},
+{n:"Tandoori Roti",e:"🫓",c:"bread",cal:245,p:8.2,cb:50,f:2.0,fb:3.2,s:0.5,na:350,ch:0},
+{n:"Paratha",e:"🫓",c:"bread",cal:326,p:7.5,cb:45,f:13,fb:2.5,s:1.0,na:410,ch:10},
+{n:"Aloo Paratha",e:"🫓",c:"bread",cal:290,p:6.5,cb:42,f:11,fb:2.8,s:1.5,na:430,ch:8},
+{n:"Laccha Paratha",e:"🫓",c:"bread",cal:340,p:7.0,cb:43,f:15,fb:2.0,s:1.2,na:400,ch:15},
+{n:"Chapati",e:"🫓",c:"bread",cal:250,p:8.5,cb:50,f:2.5,fb:3.5,s:0.5,na:360,ch:0},
+{n:"Puri",e:"🫓",c:"bread",cal:370,p:6.8,cb:46,f:17,fb:2.0,s:1.0,na:390,ch:0},
+{n:"Kulcha",e:"🫓",c:"bread",cal:310,p:8.0,cb:50,f:8.5,fb:2.0,s:3.0,na:460,ch:5},
+{n:"Sheermal",e:"🫓",c:"bread",cal:330,p:8.5,cb:52,f:10,fb:1.5,s:8.0,na:300,ch:25},
+{n:"Roghni Naan",e:"🫓",c:"bread",cal:350,p:9.0,cb:50,f:12,fb:2.0,s:4.0,na:480,ch:15},
+{n:"Keema Naan",e:"🫓",c:"bread",cal:305,p:14,cb:40,f:10,fb:1.8,s:2.0,na:520,ch:35},
+{n:"Bakarkhani",e:"🫓",c:"bread",cal:345,p:8.0,cb:48,f:13,fb:1.5,s:6.0,na:350,ch:18},
+{n:"White Bread",e:"🍞",c:"bread",cal:265,p:9.0,cb:49,f:3.2,fb:2.7,s:5.0,na:491,ch:0},
+{n:"Toast",e:"🍞",c:"bread",cal:313,p:9.0,cb:55,f:6.0,fb:3.0,s:5.0,na:530,ch:0},
+{n:"Wheat Flour Atta",e:"🌾",c:"bread",cal:340,p:13.2,cb:72,f:1.5,fb:10.7,s:0.4,na:2,ch:0},
+{n:"Semolina Suji",e:"🌾",c:"bread",cal:360,p:12.7,cb:73,f:1.1,fb:3.9,s:0.6,na:1,ch:0},
+// MAIN DISHES
+{n:"Chicken Karahi",e:"🍛",c:"main-dish",cal:180,p:17,cb:4.5,f:10.5,fb:0.8,s:2.0,na:520,ch:70},
+{n:"Mutton Karahi",e:"🍛",c:"main-dish",cal:210,p:18,cb:4.0,f:13.5,fb:0.7,s:1.8,na:540,ch:75},
+{n:"Chicken Korma",e:"🍛",c:"main-dish",cal:195,p:15.5,cb:8,f:12,fb:1.0,s:3.0,na:480,ch:65},
+{n:"Beef Korma",e:"🍛",c:"main-dish",cal:215,p:16.5,cb:7.5,f:14,fb:0.8,s:2.5,na:500,ch:60},
+{n:"Nihari",e:"🍛",c:"main-dish",cal:200,p:16,cb:8,f:12,fb:0.5,s:1.0,na:550,ch:58},
+{n:"Haleem",e:"🍛",c:"main-dish",cal:155,p:10.5,cb:18,f:4.8,fb:3.5,s:1.5,na:480,ch:25},
+{n:"Chicken Handi",e:"🍛",c:"main-dish",cal:185,p:16,cb:5,f:11.5,fb:0.6,s:2.2,na:500,ch:68},
+{n:"Mutton Handi",e:"🍛",c:"main-dish",cal:220,p:17,cb:5,f:15,fb:0.5,s:2.0,na:530,ch:72},
+{n:"Butter Chicken",e:"🍛",c:"main-dish",cal:205,p:14,cb:9,f:13,fb:0.8,s:4.0,na:490,ch:55},
+{n:"Chicken Tikka Masala",e:"🍛",c:"main-dish",cal:175,p:16.5,cb:7,f:9.5,fb:1.0,s:3.0,na:470,ch:60},
+{n:"Paya",e:"🍛",c:"main-dish",cal:175,p:14,cb:5,f:11,fb:0.2,s:0.5,na:520,ch:85},
+{n:"Qeema",e:"🍛",c:"main-dish",cal:175,p:14,cb:6,f:11,fb:1.2,s:1.5,na:450,ch:50},
+{n:"Keema Matar",e:"🍛",c:"main-dish",cal:170,p:14.5,cb:8,f:9.5,fb:2.5,s:2.5,na:440,ch:48},
+{n:"Aloo Gosht",e:"🍛",c:"main-dish",cal:165,p:12,cb:12,f:8,fb:1.5,s:1.5,na:470,ch:40},
+{n:"Aloo Qeema",e:"🍛",c:"main-dish",cal:160,p:10.5,cb:14,f:7.5,fb:1.8,s:1.5,na:430,ch:35},
+{n:"Saag Gosht",e:"🍛",c:"main-dish",cal:155,p:14,cb:5,f:9,fb:2.0,s:1.0,na:410,ch:45},
+{n:"Bhindi Gosht",e:"🍛",c:"main-dish",cal:150,p:12.5,cb:7,f:8.5,fb:2.5,s:2.0,na:420,ch:38},
+{n:"Chicken Achari",e:"🍛",c:"main-dish",cal:170,p:15,cb:5,f:10,fb:0.8,s:1.5,na:550,ch:55},
+{n:"Mutton Rogan Josh",e:"🍛",c:"main-dish",cal:195,p:16,cb:5,f:12.5,fb:0.8,s:2.0,na:490,ch:65},
+{n:"Chicken Jalfrezi",e:"🍛",c:"main-dish",cal:155,p:14,cb:8,f:7.5,fb:2.0,s:3.5,na:460,ch:50},
+{n:"Bhuna Gosht",e:"🍛",c:"main-dish",cal:210,p:18,cb:4,f:14,fb:0.5,s:1.5,na:510,ch:70},
+{n:"Shinwari Karahi",e:"🍛",c:"main-dish",cal:200,p:18,cb:3.5,f:13,fb:0.5,s:1.5,na:500,ch:75},
+{n:"Dum Pukht",e:"🍛",c:"main-dish",cal:225,p:17.5,cb:5,f:15.5,fb:0.4,s:1.0,na:460,ch:72},
+{n:"Chicken Changezi",e:"🍛",c:"main-dish",cal:188,p:15.5,cb:6.5,f:11.5,fb:0.8,s:2.5,na:485,ch:62},
+{n:"Mutton Kunna",e:"🍛",c:"main-dish",cal:230,p:17,cb:5,f:16,fb:0.3,s:1.0,na:520,ch:78},
+{n:"Daal Chawal",e:"🍛",c:"main-dish",cal:145,p:6.0,cb:25,f:2.0,fb:2.5,s:1.0,na:300,ch:0},
+{n:"Halwa Puri Channay",e:"🍛",c:"main-dish",cal:280,p:7.5,cb:38,f:11.5,fb:3.0,s:12,na:420,ch:5},
+{n:"Pasta",e:"🍝",c:"main-dish",cal:160,p:5.8,cb:31,f:1.0,fb:1.8,s:0.6,na:1,ch:0},
+{n:"Prawn Karahi",e:"🦐",c:"main-dish",cal:150,p:18,cb:5,f:6.5,fb:0.5,s:1.5,na:520,ch:150},
+{n:"Beef Nihari",e:"🍛",c:"main-dish",cal:210,p:15.5,cb:9,f:13,fb:0.5,s:1.0,na:560,ch:55},
+// LENTILS
+{n:"Dal Chana",e:"🫘",c:"lentil",cal:135,p:8.5,cb:20,f:2.5,fb:5.5,s:1.5,na:350,ch:0},
+{n:"Dal Moong",e:"🫘",c:"lentil",cal:115,p:7.5,cb:19,f:1.5,fb:4.0,s:1.2,na:320,ch:0},
+{n:"Dal Masoor",e:"🫘",c:"lentil",cal:120,p:9.0,cb:19,f:1.2,fb:4.5,s:1.0,na:340,ch:0},
+{n:"Dal Mash",e:"🫘",c:"lentil",cal:130,p:8.0,cb:20,f:2.8,fb:4.0,s:1.0,na:360,ch:0},
+{n:"Daal Tarka",e:"🫘",c:"lentil",cal:140,p:8.0,cb:18,f:4.5,fb:4.0,s:1.5,na:380,ch:5},
+{n:"Channay",e:"🫘",c:"lentil",cal:140,p:7.5,cb:22,f:3.0,fb:6.0,s:2.0,na:390,ch:0},
+{n:"Cholay",e:"🫘",c:"lentil",cal:150,p:8.0,cb:23,f:3.5,fb:5.5,s:2.5,na:410,ch:0},
+{n:"Rajma",e:"🫘",c:"lentil",cal:130,p:8.5,cb:21,f:1.5,fb:6.5,s:1.0,na:360,ch:0},
+{n:"Lobiya",e:"🫘",c:"lentil",cal:125,p:8.0,cb:20,f:1.8,fb:5.0,s:1.2,na:340,ch:0},
+{n:"Mixed Dal",e:"🫘",c:"lentil",cal:125,p:8.0,cb:19,f:2.0,fb:4.5,s:1.2,na:350,ch:0},
+// VEGETABLES
+{n:"Aloo Bhujia",e:"🥔",c:"vegetable",cal:120,p:2.5,cb:18,f:4.5,fb:1.5,s:1.0,na:350,ch:0},
+{n:"Aloo Palak",e:"🥔",c:"vegetable",cal:110,p:3.5,cb:14,f:4.5,fb:2.5,s:1.5,na:370,ch:0},
+{n:"Aloo Gobi",e:"🥔",c:"vegetable",cal:105,p:3.0,cb:14,f:4.0,fb:2.8,s:2.0,na:340,ch:0},
+{n:"Bhindi Masala",e:"🫛",c:"vegetable",cal:95,p:2.5,cb:10,f:5.0,fb:3.5,s:2.5,na:320,ch:0},
+{n:"Palak Paneer",e:"🧀",c:"vegetable",cal:145,p:7.5,cb:6,f:10.5,fb:2.0,s:2.5,na:380,ch:20},
+{n:"Saag",e:"🥬",c:"vegetable",cal:70,p:4.0,cb:6,f:3.5,fb:3.0,s:1.0,na:310,ch:5},
+{n:"Baingan Bharta",e:"🍆",c:"vegetable",cal:85,p:2.0,cb:10,f:4.0,fb:3.0,s:3.5,na:330,ch:0},
+{n:"Tori Salan",e:"🥒",c:"vegetable",cal:75,p:2.0,cb:8,f:3.5,fb:2.0,s:2.5,na:290,ch:0},
+{n:"Karela Sabzi",e:"🥒",c:"vegetable",cal:80,p:2.5,cb:7,f:4.5,fb:2.8,s:1.5,na:310,ch:0},
+{n:"Kaddu Sabzi",e:"🎃",c:"vegetable",cal:85,p:1.5,cb:14,f:2.5,fb:1.5,s:5.0,na:280,ch:0},
+{n:"Gobhi Sabzi",e:"🥦",c:"vegetable",cal:90,p:3.0,cb:9,f:4.5,fb:2.5,s:2.0,na:310,ch:0},
+{n:"Mixed Sabzi",e:"🥗",c:"vegetable",cal:95,p:3.0,cb:12,f:3.5,fb:3.0,s:3.0,na:340,ch:0},
+{n:"Shimla Mirch",e:"🫑",c:"vegetable",cal:85,p:2.0,cb:10,f:4.0,fb:2.0,s:3.5,na:300,ch:0},
+{n:"Methi Aloo",e:"🥔",c:"vegetable",cal:115,p:3.0,cb:16,f:4.5,fb:2.5,s:1.5,na:350,ch:0},
+{n:"Arvi Salan",e:"🥔",c:"vegetable",cal:110,p:2.0,cb:18,f:3.5,fb:2.0,s:1.5,na:340,ch:0},
+{n:"Gajar Matar",e:"🥕",c:"vegetable",cal:85,p:3.0,cb:12,f:2.5,fb:3.0,s:4.0,na:290,ch:0},
+{n:"Potato Raw",e:"🥔",c:"vegetable",cal:77,p:2.0,cb:17,f:0.1,fb:2.2,s:0.8,na:6,ch:0},
+{n:"Onion Raw",e:"🧅",c:"vegetable",cal:40,p:1.1,cb:9.3,f:0.1,fb:1.7,s:4.2,na:4,ch:0},
+{n:"Tomato",e:"🍅",c:"vegetable",cal:18,p:0.9,cb:3.9,f:0.2,fb:1.2,s:2.6,na:5,ch:0},
+{n:"Cucumber",e:"🥒",c:"vegetable",cal:15,p:0.7,cb:3.6,f:0.1,fb:0.5,s:1.7,na:2,ch:0},
+{n:"Spinach Raw",e:"🥬",c:"vegetable",cal:23,p:2.9,cb:3.6,f:0.4,fb:2.2,s:0.4,na:79,ch:0},
+{n:"Green Chili",e:"🌶️",c:"vegetable",cal:40,p:1.9,cb:8.8,f:0.4,fb:1.5,s:5.3,na:3,ch:0},
+{n:"Garlic",e:"🧄",c:"vegetable",cal:149,p:6.4,cb:33,f:0.5,fb:2.1,s:1.0,na:17,ch:0},
+{n:"Ginger",e:"🫚",c:"vegetable",cal:80,p:1.8,cb:18,f:0.8,fb:2.0,s:1.7,na:13,ch:0},
+{n:"Corn Makai",e:"🌽",c:"vegetable",cal:86,p:3.3,cb:19,f:1.4,fb:2.7,s:3.2,na:15,ch:0},
+// MEAT
+{n:"Chicken Tikka",e:"🍗",c:"meat",cal:175,p:25,cb:3,f:7.5,fb:0.3,s:0.8,na:480,ch:85},
+{n:"Seekh Kebab",e:"🍢",c:"meat",cal:225,p:18,cb:5,f:15,fb:0.5,s:1.0,na:510,ch:70},
+{n:"Chapli Kebab",e:"🍔",c:"meat",cal:250,p:16,cb:8,f:18,fb:0.8,s:1.5,na:530,ch:75},
+{n:"Reshmi Kebab",e:"🍢",c:"meat",cal:195,p:22,cb:4,f:10,fb:0.3,s:0.5,na:460,ch:80},
+{n:"Shami Kebab",e:"🍔",c:"meat",cal:220,p:14,cb:12,f:13,fb:1.5,s:1.0,na:490,ch:65},
+{n:"Malai Boti",e:"🍗",c:"meat",cal:200,p:20,cb:4,f:11.5,fb:0.2,s:1.5,na:440,ch:75},
+{n:"Tandoori Chicken",e:"🍗",c:"meat",cal:165,p:24,cb:3,f:6.5,fb:0.2,s:1.0,na:520,ch:90},
+{n:"Fried Chicken",e:"🍗",c:"meat",cal:280,p:20,cb:12,f:17,fb:0.5,s:0.5,na:550,ch:80},
+{n:"Chicken Boti",e:"🍢",c:"meat",cal:170,p:22,cb:3,f:8,fb:0.3,s:0.8,na:440,ch:78},
+{n:"Chicken Breast Grilled",e:"🍗",c:"meat",cal:165,p:31,cb:0,f:3.6,fb:0,s:0,na:74,ch:85},
+{n:"Lamb Chops",e:"🥩",c:"meat",cal:265,p:21,cb:0,f:20,fb:0,s:0,na:65,ch:85},
+{n:"Mutton Chops",e:"🥩",c:"meat",cal:260,p:20,cb:3,f:19,fb:0.2,s:0.5,na:420,ch:80},
+{n:"Beef Steak",e:"🥩",c:"meat",cal:250,p:26,cb:0,f:16,fb:0,s:0,na:55,ch:80},
+{n:"Mutton Leg",e:"🥩",c:"meat",cal:230,p:19,cb:0,f:17,fb:0,s:0,na:60,ch:80},
+{n:"Fish Fry",e:"🐟",c:"meat",cal:220,p:18,cb:10,f:12,fb:0.3,s:0.5,na:450,ch:55},
+{n:"Fish Tikka",e:"🐟",c:"meat",cal:155,p:22,cb:4,f:6,fb:0.2,s:0.8,na:420,ch:50},
+{n:"Chicken Broast",e:"🍗",c:"meat",cal:295,p:22,cb:14,f:18,fb:0.5,s:0.8,na:600,ch:85},
+{n:"Tikka Boti",e:"🍢",c:"meat",cal:185,p:23,cb:4,f:9,fb:0.3,s:1.0,na:460,ch:75},
+// STREET FOOD
+{n:"Samosa",e:"🔺",c:"street-food",cal:262,p:5.5,cb:28,f:14.5,fb:2.0,s:1.5,na:420,ch:5},
+{n:"Pakora",e:"🧆",c:"street-food",cal:280,p:6.0,cb:24,f:18,fb:2.0,s:2.0,na:380,ch:10},
+{n:"Gol Gappay",e:"🫧",c:"street-food",cal:230,p:5.0,cb:35,f:8,fb:2.5,s:5.0,na:450,ch:0},
+{n:"Dahi Baray",e:"🥣",c:"street-food",cal:185,p:6.5,cb:25,f:6.5,fb:1.5,s:5.0,na:380,ch:8},
+{n:"Bun Kebab",e:"🍔",c:"street-food",cal:280,p:12,cb:30,f:13,fb:2.0,s:3.0,na:520,ch:35},
+{n:"Roll Paratha",e:"🌯",c:"street-food",cal:285,p:14,cb:30,f:12.5,fb:1.5,s:2.0,na:480,ch:40},
+{n:"Chana Chaat",e:"🥗",c:"street-food",cal:140,p:7.0,cb:22,f:3.0,fb:5.0,s:3.0,na:410,ch:0},
+{n:"Fruit Chaat",e:"🥗",c:"street-food",cal:85,p:1.2,cb:18,f:1.0,fb:2.5,s:14,na:200,ch:0},
+{n:"Aloo Tikki",e:"🥔",c:"street-food",cal:200,p:4.0,cb:28,f:8.5,fb:2.0,s:1.5,na:400,ch:5},
+{n:"Fries",e:"🍟",c:"street-food",cal:312,p:3.4,cb:41,f:15,fb:3.8,s:0.3,na:210,ch:0},
+{n:"Spring Roll",e:"🥟",c:"street-food",cal:220,p:5.0,cb:25,f:11,fb:1.5,s:2.0,na:400,ch:10},
+{n:"Shawarma",e:"🌯",c:"street-food",cal:230,p:16,cb:20,f:10,fb:1.5,s:3.0,na:520,ch:45},
+{n:"Chicken Burger",e:"🍔",c:"street-food",cal:260,p:15,cb:28,f:10.5,fb:1.5,s:4.0,na:550,ch:45},
+{n:"Beef Burger",e:"🍔",c:"street-food",cal:295,p:17,cb:26,f:14,fb:1.2,s:5.0,na:580,ch:55},
+{n:"Pizza",e:"🍕",c:"street-food",cal:266,p:11,cb:33,f:10,fb:2.3,s:3.6,na:590,ch:17},
+{n:"Sandwich",e:"🥪",c:"street-food",cal:250,p:10,cb:30,f:10,fb:2.0,s:4.0,na:480,ch:25},
+{n:"Bread Pakora",e:"🍞",c:"street-food",cal:260,p:5.5,cb:28,f:14,fb:1.5,s:2.0,na:420,ch:15},
+{n:"Kachori",e:"🍩",c:"street-food",cal:330,p:6.5,cb:35,f:18,fb:2.5,s:2.0,na:450,ch:5},
+{n:"Dahi Phulki",e:"🥣",c:"street-food",cal:170,p:6.0,cb:22,f:6.0,fb:1.5,s:4.0,na:360,ch:8},
+{n:"Seekh Kabab Roll",e:"🌯",c:"street-food",cal:270,p:15,cb:28,f:11,fb:1.5,s:2.0,na:500,ch:45},
+// FRUITS
+{n:"Mango",e:"🥭",c:"fruit",cal:60,p:0.8,cb:15,f:0.4,fb:1.6,s:13.7,na:1,ch:0},
+{n:"Banana",e:"🍌",c:"fruit",cal:89,p:1.1,cb:22.8,f:0.3,fb:2.6,s:12.2,na:1,ch:0},
+{n:"Apple",e:"🍎",c:"fruit",cal:52,p:0.3,cb:13.8,f:0.2,fb:2.4,s:10.4,na:1,ch:0},
+{n:"Orange",e:"🍊",c:"fruit",cal:47,p:0.9,cb:11.8,f:0.1,fb:2.4,s:9.4,na:0,ch:0},
+{n:"Guava Amrood",e:"🍈",c:"fruit",cal:68,p:2.6,cb:14.3,f:1.0,fb:5.4,s:8.9,na:2,ch:0},
+{n:"Papaya",e:"🍈",c:"fruit",cal:43,p:0.5,cb:11,f:0.3,fb:1.7,s:7.8,na:8,ch:0},
+{n:"Watermelon Tarbooz",e:"🍉",c:"fruit",cal:30,p:0.6,cb:7.6,f:0.2,fb:0.4,s:6.2,na:1,ch:0},
+{n:"Grapes Angoor",e:"🍇",c:"fruit",cal:69,p:0.7,cb:18.1,f:0.2,fb:0.9,s:15.5,na:2,ch:0},
+{n:"Pomegranate Anar",e:"🫐",c:"fruit",cal:83,p:1.7,cb:18.7,f:1.2,fb:4.0,s:13.7,na:3,ch:0},
+{n:"Dates Khajoor",e:"🌴",c:"fruit",cal:277,p:1.8,cb:75,f:0.2,fb:6.7,s:66.5,na:1,ch:0},
+{n:"Lychee",e:"🍒",c:"fruit",cal:66,p:0.8,cb:16.5,f:0.4,fb:1.3,s:15.2,na:1,ch:0},
+{n:"Chiku Sapodilla",e:"🥝",c:"fruit",cal:83,p:0.4,cb:20,f:1.1,fb:5.3,s:14,na:12,ch:0},
+{n:"Peach Aadoo",e:"🍑",c:"fruit",cal:39,p:0.9,cb:9.5,f:0.3,fb:1.5,s:8.4,na:0,ch:0},
+{n:"Pear Nashpati",e:"🍐",c:"fruit",cal:57,p:0.4,cb:15.2,f:0.1,fb:3.1,s:9.8,na:1,ch:0},
+{n:"Plum Aloo Bukhara",e:"🫐",c:"fruit",cal:46,p:0.7,cb:11.4,f:0.3,fb:1.4,s:9.9,na:0,ch:0},
+{n:"Strawberry",e:"🍓",c:"fruit",cal:32,p:0.7,cb:7.7,f:0.3,fb:2.0,s:4.9,na:1,ch:0},
+{n:"Lemon Nimbu",e:"🍋",c:"fruit",cal:29,p:1.1,cb:9.3,f:0.3,fb:2.8,s:2.5,na:2,ch:0},
+{n:"Jamun",e:"🫐",c:"fruit",cal:60,p:0.7,cb:14,f:0.2,fb:0.6,s:12,na:14,ch:0},
+{n:"Falsa",e:"🫐",c:"fruit",cal:50,p:1.6,cb:10.7,f:0.1,fb:2.5,s:7.0,na:17,ch:0},
+{n:"Kinnow",e:"🍊",c:"fruit",cal:43,p:0.8,cb:10,f:0.2,fb:2.0,s:8.0,na:1,ch:0},
+{n:"Coconut Fresh",e:"🥥",c:"fruit",cal:354,p:3.3,cb:15.2,f:33.5,fb:9.0,s:6.2,na:20,ch:0},
+// DAIRY
+{n:"Full Fat Milk Doodh",e:"🥛",c:"dairy",cal:61,p:3.2,cb:4.8,f:3.3,fb:0,s:4.8,na:44,ch:10},
+{n:"Lassi Sweet",e:"🥛",c:"dairy",cal:85,p:3.0,cb:14,f:2.0,fb:0,s:13,na:50,ch:8},
+{n:"Lassi Salty",e:"🥛",c:"dairy",cal:45,p:3.0,cb:4.5,f:1.5,fb:0,s:4.0,na:280,ch:6},
+{n:"Raita",e:"🥣",c:"dairy",cal:55,p:2.5,cb:5,f:2.5,fb:0.3,s:3.5,na:200,ch:8},
+{n:"Yogurt Dahi",e:"🥣",c:"dairy",cal:61,p:3.5,cb:4.7,f:3.3,fb:0,s:4.7,na:46,ch:13},
+{n:"Paneer",e:"🧀",c:"dairy",cal:265,p:18.3,cb:1.2,f:20.8,fb:0,s:0.5,na:18,ch:60},
+{n:"Butter Makhan",e:"🧈",c:"dairy",cal:717,p:0.9,cb:0.1,f:81,fb:0,s:0.1,na:11,ch:215},
+{n:"Desi Ghee",e:"🧈",c:"dairy",cal:900,p:0,cb:0,f:100,fb:0,s:0,na:0,ch:256},
+{n:"Cream Malai",e:"🥛",c:"dairy",cal:195,p:2.0,cb:3.5,f:19.5,fb:0,s:3.0,na:35,ch:65},
+{n:"Cheese",e:"🧀",c:"dairy",cal:350,p:22,cb:2.5,f:28,fb:0,s:1.0,na:620,ch:95},
+{n:"Khoya Mawa",e:"🥛",c:"dairy",cal:320,p:12,cb:22,f:22,fb:0,s:20,na:120,ch:75},
+// SWEETS
+{n:"Gulab Jamun",e:"🍮",c:"sweet",cal:325,p:4.5,cb:48,f:13,fb:0.3,s:38,na:80,ch:20},
+{n:"Jalebi",e:"🍩",c:"sweet",cal:370,p:2.5,cb:60,f:13.5,fb:0.2,s:48,na:35,ch:5},
+{n:"Ras Malai",e:"🍮",c:"sweet",cal:190,p:5.5,cb:25,f:8,fb:0,s:22,na:55,ch:25},
+{n:"Kheer",e:"🍮",c:"sweet",cal:150,p:4.0,cb:24,f:4.5,fb:0.2,s:16,na:50,ch:15},
+{n:"Barfi",e:"🍮",c:"sweet",cal:355,p:7.0,cb:48,f:15,fb:0.5,s:40,na:40,ch:30},
+{n:"Laddu",e:"🟡",c:"sweet",cal:370,p:5.5,cb:52,f:16,fb:1.0,s:35,na:25,ch:15},
+{n:"Gajar Ka Halwa",e:"🥕",c:"sweet",cal:180,p:3.5,cb:26,f:7.5,fb:1.5,s:18,na:45,ch:15},
+{n:"Suji Halwa",e:"🍮",c:"sweet",cal:290,p:3.5,cb:42,f:12,fb:0.8,s:25,na:40,ch:20},
+{n:"Sohan Halwa",e:"🍮",c:"sweet",cal:385,p:3.5,cb:55,f:17,fb:0.5,s:42,na:30,ch:20},
+{n:"Phirni",e:"🍮",c:"sweet",cal:140,p:3.5,cb:22,f:4.0,fb:0.3,s:15,na:45,ch:12},
+{n:"Kulfi",e:"🍦",c:"sweet",cal:185,p:4.5,cb:22,f:9.0,fb:0,s:18,na:55,ch:30},
+{n:"Falooda",e:"🍦",c:"sweet",cal:175,p:3.0,cb:30,f:5.0,fb:0.5,s:22,na:45,ch:12},
+{n:"Sheer Khurma",e:"🍮",c:"sweet",cal:165,p:4.5,cb:24,f:6.0,fb:0.8,s:18,na:50,ch:15},
+{n:"Rabri",e:"🍮",c:"sweet",cal:215,p:5.0,cb:28,f:9.5,fb:0,s:24,na:60,ch:35},
+// DRINKS
+{n:"Chai Tea",e:"☕",c:"drink",cal:50,p:1.5,cb:7.5,f:1.5,fb:0,s:6.5,na:25,ch:5},
+{n:"Green Tea",e:"🍵",c:"drink",cal:2,p:0.2,cb:0.3,f:0,fb:0,s:0,na:1,ch:0},
+{n:"Kahwa",e:"🍵",c:"drink",cal:15,p:0.3,cb:3,f:0.1,fb:0,s:2.0,na:2,ch:0},
+{n:"Rooh Afza",e:"🥤",c:"drink",cal:80,p:0,cb:20,f:0,fb:0,s:19.5,na:15,ch:0},
+{n:"Mango Shake",e:"🥭",c:"drink",cal:120,p:3.0,cb:22,f:2.5,fb:0.5,s:18,na:40,ch:8},
+{n:"Banana Shake",e:"🍌",c:"drink",cal:110,p:3.5,cb:20,f:2.0,fb:0.8,s:15,na:42,ch:8},
+{n:"Nimbu Pani",e:"🍋",c:"drink",cal:40,p:0.2,cb:10,f:0,fb:0.1,s:9.0,na:180,ch:0},
+{n:"Coca Cola",e:"🥤",c:"drink",cal:42,p:0,cb:10.6,f:0,fb:0,s:10.6,na:4,ch:0},
+{n:"Pepsi",e:"🥤",c:"drink",cal:41,p:0,cb:10.8,f:0,fb:0,s:10.8,na:3,ch:0},
+{n:"7UP",e:"🥤",c:"drink",cal:38,p:0,cb:9.5,f:0,fb:0,s:9.5,na:14,ch:0},
+{n:"Orange Juice Fresh",e:"🍊",c:"drink",cal:45,p:0.7,cb:10.4,f:0.2,fb:0.2,s:8.4,na:1,ch:0},
+{n:"Doodh Patti",e:"☕",c:"drink",cal:65,p:2.5,cb:8,f:2.5,fb:0,s:7.0,na:30,ch:8},
+{n:"Kashmiri Chai Pink Tea",e:"☕",c:"drink",cal:70,p:2.0,cb:9,f:3.0,fb:0,s:7.0,na:35,ch:10},
+{n:"Sugarcane Juice",e:"🥤",c:"drink",cal:73,p:0.3,cb:18,f:0,fb:0,s:17.5,na:5,ch:0},
+{n:"Sattu Drink",e:"🥤",c:"drink",cal:75,p:5.0,cb:12,f:1.0,fb:1.5,s:4.0,na:280,ch:0},
+{n:"Almond Milk",e:"🥛",c:"drink",cal:15,p:0.6,cb:0.6,f:1.2,fb:0.2,s:0,na:72,ch:0},
+// SAUCES
+{n:"Green Chutney",e:"🫙",c:"sauce",cal:35,p:1.5,cb:5,f:0.8,fb:1.5,s:1.5,na:420,ch:0},
+{n:"Imli Chutney",e:"🫙",c:"sauce",cal:120,p:0.5,cb:30,f:0.2,fb:1.0,s:25,na:350,ch:0},
+{n:"Mint Raita",e:"🥣",c:"sauce",cal:55,p:2.5,cb:5,f:2.5,fb:0.5,s:3.5,na:200,ch:8},
+{n:"Achaar Mixed Pickle",e:"🫙",c:"sauce",cal:130,p:1.5,cb:6,f:11,fb:2.0,s:2.5,na:1400,ch:0},
+{n:"Mango Pickle",e:"🫙",c:"sauce",cal:140,p:1.0,cb:8,f:12,fb:1.5,s:3.0,na:1500,ch:0},
+{n:"Ketchup",e:"🫙",c:"sauce",cal:100,p:1.0,cb:25,f:0.1,fb:0.3,s:22,na:900,ch:0},
+{n:"Mayonnaise",e:"🫙",c:"sauce",cal:680,p:1.0,cb:1,f:75,fb:0,s:0.5,na:635,ch:42},
+{n:"Hot Sauce",e:"🌶️",c:"sauce",cal:15,p:0.5,cb:3,f:0.2,fb:0.5,s:1.5,na:1100,ch:0},
+{n:"Garlic Sauce",e:"🫙",c:"sauce",cal:420,p:1.5,cb:8,f:43,fb:0.2,s:1.5,na:580,ch:25},
+{n:"Chili Garlic Sauce",e:"🌶️",c:"sauce",cal:55,p:1.0,cb:12,f:0.5,fb:1.0,s:8.0,na:800,ch:0},
+{n:"Soy Sauce",e:"🫙",c:"sauce",cal:53,p:8.1,cb:4.9,f:0.1,fb:0.8,s:0.4,na:5493,ch:0},
+{n:"Cooking Oil",e:"🫒",c:"sauce",cal:884,p:0,cb:0,f:100,fb:0,s:0,na:0,ch:0},
+{n:"Olive Oil",e:"🫒",c:"sauce",cal:884,p:0,cb:0,f:100,fb:0,s:0,na:2,ch:0},
+{n:"Sugar Cheeni",e:"🍬",c:"sauce",cal:387,p:0,cb:100,f:0,fb:0,s:100,na:1,ch:0},
+{n:"Honey Shahad",e:"🍯",c:"sauce",cal:304,p:0.3,cb:82.4,f:0,fb:0.2,s:82.1,na:4,ch:0},
+{n:"Jaggery Gur",e:"🍬",c:"sauce",cal:383,p:0.4,cb:98,f:0.1,fb:0,s:84,na:30,ch:0},
+// SNACKS & EGGS
+{n:"Nimko",e:"🍿",c:"snack",cal:480,p:12,cb:52,f:25,fb:3.0,s:2.0,na:680,ch:0},
+{n:"Chips",e:"🍿",c:"snack",cal:536,p:7.0,cb:53,f:33,fb:4.0,s:0.5,na:525,ch:0},
+{n:"Papad",e:"🫓",c:"snack",cal:310,p:18,cb:50,f:4.5,fb:3.5,s:1.0,na:1800,ch:0},
+{n:"Namak Para",e:"🍿",c:"snack",cal:440,p:7.5,cb:50,f:24,fb:2.0,s:1.0,na:620,ch:5},
+{n:"Egg Boiled",e:"🥚",c:"snack",cal:155,p:12.6,cb:1.1,f:10.6,fb:0,s:1.1,na:124,ch:373},
+{n:"Egg Fried",e:"🍳",c:"snack",cal:196,p:13.6,cb:1.0,f:15,fb:0,s:0.4,na:207,ch:401},
+{n:"Omelette",e:"🍳",c:"snack",cal:175,p:12,cb:2,f:13,fb:0.2,s:0.5,na:350,ch:350},
+{n:"Anda Paratha",e:"🫓",c:"snack",cal:310,p:11,cb:35,f:14,fb:1.5,s:1.0,na:450,ch:180},
+{n:"Oats",e:"🥣",c:"snack",cal:389,p:16.9,cb:66,f:6.9,fb:10.6,s:0,na:2,ch:0},
+{n:"Cornflakes",e:"🥣",c:"snack",cal:357,p:8.0,cb:84,f:0.4,fb:0.7,s:8.0,na:729,ch:0},
+// NUTS
+{n:"Almonds Badam",e:"🌰",c:"snack",cal:579,p:21,cb:22,f:50,fb:12.5,s:4.4,na:1,ch:0},
+{n:"Peanuts",e:"🥜",c:"snack",cal:567,p:25.8,cb:16.1,f:49.2,fb:8.5,s:4.7,na:18,ch:0},
+{n:"Cashew Kaju",e:"🌰",c:"snack",cal:553,p:18.2,cb:30.2,f:43.9,fb:3.3,s:5.9,na:12,ch:0},
+{n:"Walnuts Akhrot",e:"🌰",c:"snack",cal:654,p:15.2,cb:13.7,f:65.2,fb:6.7,s:2.6,na:2,ch:0},
+{n:"Pistachios Pista",e:"🌰",c:"snack",cal:560,p:20.2,cb:27.2,f:45.3,fb:10.6,s:7.7,na:1,ch:0},
+{n:"Chia Seeds",e:"🌰",c:"snack",cal:486,p:16.5,cb:42.1,f:30.7,fb:34.4,s:0,na:16,ch:0},
+{n:"Flaxseeds Alsi",e:"🌰",c:"snack",cal:534,p:18.3,cb:28.9,f:42.2,fb:27.3,s:1.6,na:30,ch:0},
+];
+
+// ================================================================
+// STATE
+// ================================================================
+let history=[], tracker=[], curCat='all', lastFood=null, lastWeight=100, deferredPrompt=null;
+
+// ================================================================
+// INIT
+// ================================================================
+document.addEventListener('DOMContentLoaded',()=>{
+    document.getElementById('totalFoods').textContent=DB.length+'+';
+    renderCategories();
+    renderQuick();
+    loadStorage();
+    setupEvents();
+    // Splash
+    setTimeout(()=>{document.getElementById('splash').classList.add('hide')},2200);
+    setTimeout(()=>{document.getElementById('splash').style.display='none'},2800);
+});
+
+// PWA install prompt
+window.addEventListener('beforeinstallprompt',(e)=>{
+    e.preventDefault(); deferredPrompt=e;
+    setTimeout(()=>document.getElementById('installBanner').classList.add('show'),5000);
+});
+
+function installApp(){
+    if(deferredPrompt){deferredPrompt.prompt();deferredPrompt.userChoice.then(()=>{deferredPrompt=null;dismissInstall()})}
+    else{toast('📱 Use browser menu → Add to Home Screen');dismissInstall()}
+}
+function dismissInstall(){document.getElementById('installBanner').classList.remove('show')}
+
+// ================================================================
+// EVENTS
+// ================================================================
+function setupEvents(){
+    const fi=document.getElementById('foodInput'),wi=document.getElementById('weightInput');
+    fi.addEventListener('input',showSuggestions);
+    fi.addEventListener('focus',showSuggestions);
+    fi.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();wi.focus()}});
+    wi.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();calculate()}});
+    document.addEventListener('click',e=>{
+        if(!e.target.closest('.food-col'))document.getElementById('suggestions').classList.remove('open');
+    });
+    // Ripple on calc button
+    document.getElementById('calcBtn').addEventListener('click',function(e){
+        const r=document.createElement('span');r.className='btn-ripple';
+        const rect=this.getBoundingClientRect();
+        r.style.left=(e.clientX-rect.left)+'px';r.style.top=(e.clientY-rect.top)+'px';
+        r.style.width=r.style.height=Math.max(rect.width,rect.height)+'px';
+        this.appendChild(r);setTimeout(()=>r.remove(),600);
+    });
+}
+
+// ================================================================
+// SUGGESTIONS
+// ================================================================
+function showSuggestions(){
+    const v=document.getElementById('foodInput').value.trim().toLowerCase(),el=document.getElementById('suggestions');
+    let items;
+    if(!v){items=getPopular().slice(0,8)}
+    else{
+        items=DB.filter(fd=>{const nm=fd.n.toLowerCase();return nm.includes(v)||v.split(' ').every(w=>nm.includes(w))});
+        if(curCat!=='all'){const cf=items.filter(x=>x.c===curCat);if(cf.length)items=cf}
+    }
+    if(!items.length){el.innerHTML='<div class="sug-empty">🔍 No match for "'+v+'"</div>';el.classList.add('open');return}
+    el.innerHTML=items.slice(0,10).map(fd=>`<div class="sug-item" onclick="pickFood('${fd.n.replace(/'/g,"\\'")}')"><div class="sug-emoji">${fd.e}</div><div class="sug-info"><div class="sug-name">${fd.n}</div><div class="sug-cat">${fd.c.replace('-',' ')} • ${fd.cal} kcal</div></div></div>`).join('');
+    el.classList.add('open');
+}
+function pickFood(n){
+    document.getElementById('foodInput').value=n;
+    document.getElementById('suggestions').classList.remove('open');
+    document.getElementById('weightInput').focus();
+    document.getElementById('weightInput').select();
+}
+
+// ================================================================
+// CATEGORIES
+// ================================================================
+function renderCategories(){
+    const cats=[['all','📋','All'],['main-dish','🍛','Dishes'],['bread','🫓','Breads'],['rice','🍚','Rice'],['meat','🥩','Meat'],['lentil','🫘','Lentils'],['vegetable','🥬','Veggies'],['fruit','🍎','Fruits'],['dairy','🥛','Dairy'],['sweet','🍮','Sweets'],['drink','🥤','Drinks'],['sauce','🫙','Sauces'],['snack','🍿','Snacks'],['street-food','🍢','Street']];
+    document.getElementById('catsScroll').innerHTML=cats.map(([id,em,lab])=>`<button class="cat-chip${id==='all'?' on':''}" onclick="setCat('${id}',this)">${em} ${lab}</button>`).join('');
+}
+function setCat(cat,btn){
+    curCat=cat;document.querySelectorAll('.cat-chip').forEach(c=>c.classList.remove('on'));btn.classList.add('on');renderQuick(cat);
+}
+
+// ================================================================
+// QUICK FOODS
+// ================================================================
+function getPopular(){
+    const names=["Chicken Biryani","Roti","Naan","Chicken Karahi","Nihari","Dal Chana","Mango","Chai Tea","Samosa","Gulab Jamun","Lassi Sweet","Paratha"];
+    return names.map(n=>DB.find(f=>f.n===n)).filter(Boolean);
+}
+function renderQuick(cat='all'){
+    const foods=(cat==='all'?getPopular():DB.filter(f=>f.c===cat)).slice(0,12);
+    document.getElementById('quickGrid').innerHTML=foods.map(f=>`<div class="qf" onclick="quickPick('${f.n.replace(/'/g,"\\'")}')"><span class="qf-emoji">${f.e}</span><div class="qf-name">${f.n}</div><div class="qf-cal">${f.cal} kcal</div></div>`).join('');
+}
+function quickPick(n){
+    document.getElementById('foodInput').value=n;document.getElementById('weightInput').value=100;
+    switchPage('pageHome',document.querySelector('.nav-item'));
+    setTimeout(()=>{calculate();window.scrollTo({top:0,behavior:'smooth'})},100);
+}
+
+// ================================================================
+// CALCULATE
+// ================================================================
+function calculate(){
+    const name=document.getElementById('foodInput').value.trim(),wt=parseFloat(document.getElementById('weightInput').value);
+    const res=document.getElementById('results'),err=document.getElementById('errorBox'),load=document.getElementById('loading');
+    document.getElementById('suggestions').classList.remove('open');
+    res.classList.remove('on');err.classList.remove('on');
+    if(!name){showErr('Please enter a food name.');return}
+    if(!wt||wt<=0||isNaN(wt)){showErr('Please enter valid weight in grams.');return}
+    if(wt>10000){showErr('Max weight is 10,000g.');return}
+    let food=DB.find(f=>f.n.toLowerCase()===name.toLowerCase());
+    if(!food)food=DB.find(f=>f.n.toLowerCase().includes(name.toLowerCase()));
+    if(!food)food=DB.find(f=>{const w=name.toLowerCase().split(' ');return w.every(x=>f.n.toLowerCase().includes(x))});
+    if(!food){showErr(`"${name}" not found. Try picking from suggestions!`);return}
+    load.classList.add('on');
+    setTimeout(()=>{load.classList.remove('on');showResults(food,wt);addHistory(food,wt);toast('✅ '+food.n+' — '+((food.cal*wt/100).toFixed(0))+' kcal')},500);
+}
+function showErr(msg){document.getElementById('errorText').textContent=msg;document.getElementById('errorBox').classList.add('on')}
+
+// ================================================================
+// DISPLAY RESULTS
+// ================================================================
+function showResults(food,wt){
+    const m=wt/100,res=document.getElementById('results');
+    lastFood=food;lastWeight=wt;
+    const cal=(food.cal*m).toFixed(1),pro=(food.p*m).toFixed(1),carb=(food.cb*m).toFixed(1),fat=(food.f*m).toFixed(1),fib=(food.fb*m).toFixed(1);
+    const sug=(food.s*m).toFixed(1),na=(food.na*m).toFixed(0),ch=(food.ch*m).toFixed(0);
+    document.getElementById('resEmoji').textContent=food.e;
+    document.getElementById('resName').textContent=food.n;
+    document.getElementById('resWeight').textContent=`per ${wt}g serving`;
+    res.classList.add('on');
+    animNum('calVal',0,+cal,700);
+    setTimeout(()=>animNum('proVal',0,+pro,500),150);
+    setTimeout(()=>animNum('carbVal',0,+carb,500),250);
+    setTimeout(()=>animNum('fatVal',0,+fat,500),350);
+    setTimeout(()=>animNum('fibVal',0,+fib,500),450);
+    const mx=Math.max(+pro,+carb,+fat,+fib,1);
+    setTimeout(()=>{
+        document.getElementById('proBar').style.width=(+pro/mx*100)+'%';
+        document.getElementById('carbBar').style.width=(+carb/mx*100)+'%';
+        document.getElementById('fatBar').style.width=(+fat/mx*100)+'%';
+        document.getElementById('fibBar').style.width=(+fib/mx*100)+'%';
+    },250);
+    drawPie(+pro,+carb,+fat);
+    document.getElementById('detailRows').innerHTML=`
+        <div class="d-row"><span class="d-label">🍬 Sugar</span><span class="d-value">${sug}g</span></div>
+        <div class="d-row"><span class="d-label">🧂 Sodium</span><span class="d-value">${na}mg</span></div>
+        <div class="d-row"><span class="d-label">💛 Cholesterol</span><span class="d-value">${ch}mg</span></div>
+        <div class="d-row"><span class="d-label">🏷️ Category</span><span class="d-value">${food.c.replace('-',' ').replace(/\b\w/g,l=>l.toUpperCase())}</span></div>
+        <div class="d-row"><span class="d-label">⚖️ Serving</span><span class="d-value">${wt}g</span></div>
+        <div class="d-row"><span class="d-label">📊 Cal/gram</span><span class="d-value">${(food.cal/100).toFixed(2)}</span></div>`;
+    setTimeout(()=>res.scrollIntoView({behavior:'smooth',block:'start'}),80);
+}
+
+function animNum(id,start,end,dur){
+    const el=document.getElementById(id),t0=performance.now();
+    function tick(now){
+        const p=Math.min((now-t0)/dur,1),ease=1-Math.pow(1-p,3),val=start+(end-start)*ease;
+        el.textContent=val<10?val.toFixed(1):Math.round(val);
+        if(p<1)requestAnimationFrame(tick);else el.textContent=end%1===0?end:end.toFixed(1);
+    }
+    requestAnimationFrame(tick);
+}
+
+function drawPie(pro,carb,fat){
+    const pie=document.getElementById('pie'),leg=document.getElementById('legend');
+    const pc=pro*4,cc=carb*4,fc=fat*9,tot=pc+cc+fc;
+    if(!tot){pie.style.background='#e0e0e0';leg.innerHTML='<p style="color:var(--text-light)">No data</p>';document.getElementById('pieCenter').innerHTML='N/A';return}
+    const pp=((pc/tot)*100).toFixed(1),cp=((cc/tot)*100).toFixed(1),fp=((fc/tot)*100).toFixed(1);
+    const d1=(pc/tot)*360,d2=(cc/tot)*360;
+    pie.style.background=`conic-gradient(var(--protein) 0deg ${d1}deg,var(--carbs) ${d1}deg ${d1+d2}deg,var(--fat) ${d1+d2}deg 360deg)`;
+    document.getElementById('pieCenter').innerHTML=`${Math.round(tot)}<br><small>kcal</small>`;
+    leg.innerHTML=`<div class="leg-item"><div class="leg-dot" style="background:var(--protein)"></div>Protein<span class="leg-val">${pp}%</span></div><div class="leg-item"><div class="leg-dot" style="background:var(--carbs)"></div>Carbs<span class="leg-val">${cp}%</span></div><div class="leg-item"><div class="leg-dot" style="background:var(--fat)"></div>Fat<span class="leg-val">${fp}%</span></div>`;
+}
+
+// ================================================================
+// DAILY TRACKER
+// ================================================================
+function addToTracker(){
+    if(!lastFood)return;
+    const m=lastWeight/100;
+    tracker.push({n:lastFood.n,e:lastFood.e,wt:lastWeight,cal:+(lastFood.cal*m).toFixed(1),pro:+(lastFood.p*m).toFixed(1),carb:+(lastFood.cb*m).toFixed(1),fat:+(lastFood.f*m).toFixed(1),time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})});
+    saveStorage();renderTracker();
+    toast('➕ Added '+lastFood.n+' to daily tracker!');
+    // Haptic
+    if(navigator.vibrate)navigator.vibrate(50);
+}
+function removeTracker(i){tracker.splice(i,1);saveStorage();renderTracker();toast('🗑️ Removed from tracker')}
+function resetTracker(){tracker=[];saveStorage();renderTracker();toast('🗑️ Daily tracker reset')}
+function renderTracker(){
+    const list=document.getElementById('trackerList'),empty=document.getElementById('trackerEmpty');
+    if(!tracker.length){list.innerHTML='';empty.style.display='block';updateTotals();return}
+    empty.style.display='none';
+    list.innerHTML=tracker.map((t,i)=>`<div class="tl-item"><span class="tl-emoji">${t.e}</span><div class="tl-info"><div class="tl-name">${t.n}</div><div class="tl-meta">${t.wt}g • ${t.time}</div></div><span class="tl-cal">${Math.round(t.cal)}</span><button class="tl-del" onclick="removeTracker(${i})">✕</button></div>`).join('');
+    updateTotals();
+}
+function updateTotals(){
+    const tc=tracker.reduce((a,t)=>a+t.cal,0),tp=tracker.reduce((a,t)=>a+t.pro,0),tcb=tracker.reduce((a,t)=>a+t.carb,0),tf=tracker.reduce((a,t)=>a+t.fat,0);
+    document.getElementById('ttCal').textContent=Math.round(tc);
+    document.getElementById('ttPro').textContent=tp.toFixed(1)+'g';
+    document.getElementById('ttCarb').textContent=tcb.toFixed(1)+'g';
+    document.getElementById('ttFat').textContent=tf.toFixed(1)+'g';
+}
+
+// ================================================================
+// HISTORY
+// ================================================================
+function addHistory(food,wt){
+    history.unshift({n:food.n,e:food.e,wt:wt,cal:((food.cal*wt)/100).toFixed(0),time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})});
+    if(history.length>15)history.pop();saveStorage();renderHistory();
+}
+function renderHistory(){
+    const sec=document.getElementById('historySection'),list=document.getElementById('historyList');
+    if(!history.length){sec.classList.remove('on');return}
+    sec.classList.add('on');
+    list.innerHTML=history.map(h=>`<div class="hist-item" onclick="quickPick('${h.n.replace(/'/g,"\\'")}')"><span class="hist-emoji">${h.e}</span><div class="hist-info"><div class="hist-name">${h.n}</div><div class="hist-det">${h.wt}g • ${h.time}</div></div><span class="hist-cal">${h.cal} kcal</span></div>`).join('');
+}
+function clearHistory(){history=[];saveStorage();renderHistory();toast('🗑️ History cleared')}
+
+// ================================================================
+// STORAGE
+// ================================================================
+function saveStorage(){
+    try{
+        localStorage.setItem('bd_hist',JSON.stringify(history));
+        localStorage.setItem('bd_track',JSON.stringify(tracker));
+        // Reset tracker if day changed
+        localStorage.setItem('bd_day',new Date().toDateString());
+    }catch(e){}
+}
+function loadStorage(){
+    try{
+        const d=localStorage.getItem('bd_day');
+        if(d&&d!==new Date().toDateString()){localStorage.removeItem('bd_track')}
+        history=JSON.parse(localStorage.getItem('bd_hist')||'[]');
+        tracker=JSON.parse(localStorage.getItem('bd_track')||'[]');
+        renderHistory();renderTracker();
+    }catch(e){}
+}
+
+// ================================================================
+// NAVIGATION
+// ================================================================
+function switchPage(id,navEl){
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+    document.getElementById(id).classList.add('on');
+    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('on'));
+    if(navEl&&navEl.classList.contains('nav-item'))navEl.classList.add('on');
+    window.scrollTo({top:0,behavior:'smooth'});
+    if(navigator.vibrate)navigator.vibrate(30);
+}
+function focusSearch(){
+    switchPage('pageHome',document.querySelector('.nav-item'));
+    setTimeout(()=>{document.getElementById('foodInput').focus();window.scrollTo({top:0,behavior:'smooth'})},150);
+}
+function shareApp(){
+    const shareData={title:'BE DADDY 🏋️',text:'Check out BE DADDY - Pakistan Food Macro Calculator! Know Your Food. Own Your Body. 🇵🇰',url:window.location.href};
+    if(navigator.share){navigator.share(shareData).catch(()=>{})}
+    else{navigator.clipboard.writeText(window.location.href).then(()=>toast('📋 Link copied!')).catch(()=>toast('Share this page from your browser menu'))}
+}
+
+// ================================================================
+// TOAST
+// ================================================================
+function toast(msg){
+    const t=document.getElementById('toast');document.getElementById('toastMsg').textContent=msg;
+    t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);
+}
+</script>
+</body>
+</html>
